@@ -64,16 +64,15 @@ Terraform을 실행하기 위해서는 아래의 Input 값들이 필요합니다
 
 Terraform을 통해 Consumer 생성 시 Kafka Consumer를 통해 데이터를 가져올때의 출력 로그 수준을 변경합니다.
 <pre>
-<code>log4j.logger.org.apache.kafka.clients.consumer.internals.Fetcher=DEBUG
-</code>
+<code>log4j.logger.org.apache.kafka.clients.consumer.internals.Fetcher=DEBUG</code>
 </pre>
 
 
 Terraform을 통해 MSK 클러스터를 생성하며, 아래의 Config를 기반으로 클러스터를 생성합니다.
 <pre>
-<code>auto.create.topics.enable = true</code>
-<code>delete.topic.enable       = true</code>
-<code>replica.selector.class    = org.apache.kafka.common.replica.RackAwareReplicaSelector </code>
+<code>auto.create.topics.enable = true
+delete.topic.enable       = true
+replica.selector.class    = org.apache.kafka.common.replica.RackAwareReplicaSelector </code>
 </pre>
 
 - **replica.selector.class** : 구현하는 정규화된 클래스 이름. ReplicaSelector 브로커는 이 값을 사용하여 선호하는 읽기 복제본을 찾습니다. Apache Kafka 버전 2.4.1 이상을 사용하며 소비자가 가장 가까운 복제본에서 가져오도록 허용하려면 이 속성을 org.apache.kafka.common.replica.RackAwareReplicaSelector로 설정합니다.
