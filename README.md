@@ -17,7 +17,7 @@ Amazon MSK의 경우 MSK를 생성 할 시 가용영역을 지정하고, 각 가
 
 ## Cross-AZ 통신 제거로 비용 절감
 
-### KIP-392
+### KIP-392을 통한 문제해결
 
 <img src="/pic/pic2.png" width="50%" height="50%"></img>
 
@@ -81,5 +81,59 @@ Terraform을 통해 MSK 클러스터 생성이 완료되면, MSK 클러스터 �
 
 <pre>
 <code>## 예시 </code>
-<code>delete.topic.enable       = true</code>
+<code>msk_endpoint = "b-1.*****.cc6txp.c13.kafka.us-east-1.amazonaws.com:9094"</code>
 </pre>
+
+Terraform을 통해 생성한 EC2로 접속합니다. 데모를 진행하기에 앞서 Terraform으로 생성한 MSK가 'rack.awareness'에 맞춰 생성 되었는지 확인합니다. 1~
+<pre>
+<code>export BOOTSTRAP=[msk_endpoint]
+cd /home/ec2-user/kafka_2.13-3.7.0/bin
+
+# 1번 브로커
+./kafka-configs.sh --broker 1 --all --describe --bootstrap-server $BOOTSTRAP | grep rack
+> 
+broker.rack=use1-az2 sensitive=false synonyms={STATIC_BROKER_CONFIG:broker.rack=use1-az2}
+
+# 2번 브로커
+./kafka-configs.sh --broker 2 --all --describe --bootstrap-server $BOOTSTRAP | grep rack
+> 
+broker.rack=use1-az4 sensitive=false synonyms={STATIC_BROKER_CONFIG:broker.rack=use1-az4}
+
+# 3번 브로커
+./kafka-configs.sh --broker 3 --all --describe --bootstrap-server $BOOTSTRAP | grep rack
+>
+broker.rack=use1-az6 sensitive=false synonyms={STATIC_BROKER_CONFIG:broker.rack=use1-az6}</code></pre>
+
+아래의 스크립트를 실행하여 MSK에 데모에 사용 할 토픽을 생성하고, 해당 토픽에 레코드를 몇 개 등록합니다. 이번 데모에서는 총 10개의 레코드를 샘플로 등록합니다.
+
+<pre>
+<code># 토픽 생성
+./kafka-topics.sh --create --topic test-topic --bootstrap-server $BOOTSTRAP --partitions 3 --replication-factor 3
+
+# 토픽에 레코드 등록
+./kafka-console-producer.sh --bootstrap-server $BOOTSTRAP --topic test-topic
+>Message 1
+>Message 2
+>Message 3
+>Message 4
+>Message 5
+>Message 6
+>Message 7
+>Message 8
+>Message 9
+>Message 10</code></pre>
+
+아래의 스크립트를 활용하여 MSK Topic에서 레코드를 Consume하고 기록되는 로그를 확인합니다.
+
+<pre>
+<code>
+./kafka-console-consumer.sh --topic test-topic --bootstrap-server $BOOTSTRAP --consumer-property client.rack=use1-az2
+</code></pre>
+
+## 리소스 정리하기
+Local Client에서 아래의 명령어를 입력하여 실습에 사용한 모든 리소스들을 삭제합니다.
+<pre>
+<code>
+terraform destroy -auto-approve 
+</code></pre>
+
