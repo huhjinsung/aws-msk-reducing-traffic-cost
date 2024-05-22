@@ -125,15 +125,10 @@ broker.rack=use1-az6 sensitive=false synonyms={STATIC_BROKER_CONFIG:broker.rack=
 
 아래의 스크립트를 활용하여 MSK Topic에서 레코드를 Consume하고 기록되는 로그를 확인합니다.
 
-<pre>
-<code>
-./kafka-console-consumer.sh --topic test-topic --bootstrap-server $BOOTSTRAP --consumer-property client.rack=use1-az2
-</code></pre>
+<pre><code>./kafka-console-consumer.sh --topic test-topic --bootstrap-server $BOOTSTRAP --consumer-property client.rack=use1-az2</code></pre>
 
 ## 리소스 정리하기
 Local Client에서 아래의 명령어를 입력하여 실습에 사용한 모든 리소스들을 삭제합니다.
-<pre>
-<code>
-terraform destroy -auto-approve 
+<pre><code>terraform destroy -auto-approve 
 </code></pre>
 
