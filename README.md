@@ -132,3 +132,7 @@ Local Client에서 아래의 명령어를 입력하여 실습에 사용한 모�
 <pre><code>terraform destroy -auto-approve 
 </code></pre>
 
+## Reference
+- [KIP-392](https://cwiki.apache.org/confluence/display/KAFKA/KIP-392%3A+Allow+consumers+to+fetch+from+closest+replica)
+- [Reduce network traffic costs of your Amazon MSK consumers with rack awareness]( https://aws.amazon.com/ko/blogs/big-data/reduce-network-traffic-costs-of-your-amazon-msk-consumers-with-rack-awareness/)
+
